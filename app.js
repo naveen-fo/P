@@ -2,7 +2,7 @@ const CFG = window.PY_CONFIG || { url: "", key: "" };
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const sb = CFG.url && window.supabase ? supabase.createClient(CFG.url, CFG.key) : null;
-let LESSONS = window.PY_LESSONS, QUIZ = window.PY_QUIZ;
+let PROBS = window.PY_PROBLEMS || [], LESSONS = window.PY_LESSONS, QUIZ = window.PY_QUIZ;
 let user = null, done = new Set(), raf = 0, py = null, editorCode = 'print("Hello, Python!")';
 const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d } catch (e) { return d } },
@@ -19,8 +19,10 @@ async function boot() {
   if (sb) {
     const { data } = await sb.auth.getSession(); user = data.session?.user || null;
     sb.auth.onAuthStateChange((_e, s) => { user = s?.user || null; loadProgress().then(route) });
-    const r = await sb.from("lessons").select("id,title,te,code").order("id");
+    const r = await sb.from("lessons").select("id,title,te,code,level,notes").order("id");
     if (r.data?.length) LESSONS = r.data;
+    const pr = await sb.from("problems").select("lesson_id,title,input,output,solution,explanation,solution2,explanation2").order("lesson_id").order("sort");
+    if (pr.data?.length) PROBS = pr.data.map(x => ({ l: x.lesson_id, t: x.title, i: x.input, o: x.output, s: x.solution, e: x.explanation, s2: x.solution2, e2: x.explanation2 }));
   }
   await loadProgress(); route();
 }
@@ -66,11 +68,18 @@ function hero() {
 
 // ---- pages ----
 const pct = () => Math.round(done.size / LESSONS.length * 100);
+const probs = id => PROBS.filter(p => p.l == id);
 const P = {
-  home: () => `<div class="hero" id="hero"><div class="copy"><h1>Python నేర్చుకో, step by step.</h1><p>17 lessons, live code editor, quiz, projects మరియు certificate — అన్నీ ఒకే చోట.</p><a class="btn" href="#/learn">Start learning</a> <a class="btn ghost" href="#/editor">Open editor</a></div><div class="scene" aria-hidden="true"><div class="win"><pre>def learn(day):\n    print("Python")\n\nfor day in range(30):\n    learn(day)</pre><b class="chip c1">def</b><b class="chip c2">for</b><b class="chip c3">class</b><b class="chip c4">print()</b></div></div></div>
-    <div class="grid" style="margin-top:16px"><a class="card" href="#/learn"><h3>Lessons</h3><p class="tag">Variables నుండి OOP వరకు</p></a><a class="card" href="#/projects"><h3>Projects</h3><p class="tag">ATM, Billing, Calculator</p></a><a class="card" href="#/quiz"><h3>Quiz</h3><p class="tag">Pass అయితే certificate</p></a><a class="card" href="#/dashboard"><h3>Progress</h3><p class="tag">${pct()}% పూర్తి</p></a></div>`,
-  learn: () => `<h2>Lessons</h2><div class="grid">${LESSONS.map(l => `<a class="card ${done.has(l.id) ? "done" : ""}" href="#/lesson/${l.id}"><h3>${esc(l.title)}</h3><p class="tag">${done.has(l.id) ? "✓ పూర్తయింది" : "ప్రారంభించు"}</p></a>`).join("")}</div>`,
-  lesson: id => { const l = LESSONS.find(x => x.id == id); if (!l) return "<p>Lesson దొరకలేదు.</p>"; return `<h2>${esc(l.title)}</h2><p>${esc(l.te)}</p><pre>${esc(l.code)}</pre><div class="row"><button id="try">Editor లో run చేయి</button><button class="ghost" id="fin">${done.has(l.id) ? "పూర్తయింది ✓" : "Mark complete"}</button>${LESSONS.find(x => x.id == l.id + 1) ? `<a class="btn ghost" href="#/lesson/${l.id + 1}">Next</a>` : `<a class="btn ghost" href="#/quiz">Quiz తీసుకో</a>`}</div>` },
+  home: () => `<div class="hero" id="hero"><div class="copy"><span class="pill">Beginner నుండి Advanced వరకు</span><h1>Python ని professional గా నేర్చుకో.</h1><p>Clear lessons, hands-on practice problems, live code editor, projects మరియు certificate. అన్నీ ఒకే చోట.</p><a class="btn" href="#/learn/b">Start learning</a> <a class="btn ghost" href="#/learn/p">Advanced track</a></div><div class="scene" aria-hidden="true"><div class="win"><pre>def learn(day):\n    print("Python")\n\nfor day in range(30):\n    learn(day)</pre><b class="chip c1">def</b><b class="chip c2">for</b><b class="chip c3">class</b><b class="chip c4">print()</b></div></div></div>
+    <div class="stats"><div><b>${LESSONS.length}</b><span>Lessons</span></div><div><b>${PROBS.length}</b><span>Practice problems</span></div><div><b>3</b><span>Projects</span></div><div><b>${pct()}%</b><span>Your progress</span></div></div>
+    <section class="sec"><h2>Choose your path</h2><div class="grid"><a class="card path" href="#/learn/b"><h3>Beginner</h3><p>Python basics step by step. ఒక్కో lesson కి 5 input/output problems, solution దాచి ఉంటుంది.</p><p class="tag">Variables, loops, strings, lists, functions, OOP</p></a><a class="card path pro" href="#/learn/p"><h3>Intermediate &amp; Advanced</h3><p>Experienced learners కోసం separate lessons మరియు deep explanations మరియు ఒక్కో lesson కి 10 complex problems, రెండేసి approaches తో.</p><p class="tag">Generators, decorators, closures, algorithms</p></a></div></section>
+    <section class="sec"><h2>How it works</h2><div class="grid"><div class="card"><h3>1. Learn</h3><p>Telugu + English లో concepts, method tables మరియు examples.</p></div><div class="card"><h3>2. Practice</h3><p>Problem చూసి సొంతంగా try చేయి. అవసరమైతే solution మరియు explanation తెరువు.</p></div><div class="card"><h3>3. Get certified</h3><p>Quiz లో 60% పైగా score చేసి certificate download చేయి.</p></div></div></section>
+    <section class="sec"><h2>Everything you need</h2><div class="grid"><div class="card"><h3>Live Python editor</h3><p>Browser లోనే code run అవుతుంది, install అవసరం లేదు.</p></div><div class="card"><h3>Real projects</h3><p>ATM, Billing, Calculator.</p></div><div class="card"><h3>Progress sync</h3><p>Login చేస్తే progress Supabase లో save అవుతుంది.</p></div><div class="card"><h3>Install as app</h3><p>PWA: home screen కి add చేసి offline లో కూడా వాడు.</p></div><div class="card"><h3>Light and dark mode</h3><p>ఒక్క tap తో theme మార్చు.</p></div><div class="card"><h3>Quiz and certificate</h3><p>మీ నైపుణ్యాన్ని test చేసి certificate పొందండి.</p></div></div></section>
+    <footer>PyPath, Python learning for Telugu learners</footer>`,
+  learn: lv => { const pro = lv === "p", list = LESSONS.filter(l => (l.level || "b") === (pro ? "p" : "b")); return `<h2>Lessons</h2><div class="tabs"><a href="#/learn/b" class="${pro ? "" : "on"}">Beginner</a><a href="#/learn/p" class="${pro ? "on" : ""}">Intermediate &amp; Advanced</a></div><p class="tag">${pro ? "Deep explanations + complex problems, రెండు approaches తో" : "Basic lessons, ఒక్కో lesson కి 5 practice problems"}</p><div class="grid">${list.map(l => `<a class="card ${done.has(l.id) ? "done" : ""}" href="#/lesson/${l.id}"><h3>${esc(l.title)}</h3><p class="tag">${probs(l.id).length} problems, ${done.has(l.id) ? "✓ పూర్తయింది" : "ప్రారంభించు"}</p></a>`).join("")}</div>` },
+  lesson: id => { const l = LESSONS.find(x => x.id == id); if (!l) return "<p>Lesson దొరకలేదు.</p>"; const ps = probs(l.id);
+    return `<h2>${esc(l.title)}</h2><p>${esc(l.te)}</p>${(l.notes || []).length ? `<div class="notes">${l.notes.map(n => `<p><code>${esc(n[0])}</code>${esc(n[1])}</p>`).join("")}</div>` : ""}<pre>${esc(l.code)}</pre><div class="row"><button id="try">Editor లో run చేయి</button><button class="ghost" id="fin">${done.has(l.id) ? "పూర్తయింది ✓" : "Mark complete"}</button>${LESSONS.find(x => x.id == l.id + 1) ? `<a class="btn ghost" href="#/lesson/${l.id + 1}">Next</a>` : `<a class="btn ghost" href="#/quiz">Quiz తీసుకో</a>`}</div>
+    <h3>Practice problems</h3>${ps.length ? ps.map((p, k) => `<div class="prob"><b>${k + 1}. ${esc(p.t)}</b><pre>Input:\n${esc(p.i)}\n\nOutput:\n${esc(p.o)}</pre><details><summary>Solution &amp; explanation</summary>${p.s2 ? "<h4>Approach 1</h4>" : ""}<pre>${esc(p.s)}</pre><p>${esc(p.e)}</p>${p.s2 ? `<h4>Approach 2</h4><pre>${esc(p.s2)}</pre><p>${esc(p.e2)}</p>` : ""}<button class="ghost" data-run="${l.id}:${k}">Editor లో run చేయి</button></details></div>`).join("") : `<p class="tag">ఈ lesson కి problems త్వరలో add అవుతాయి.</p>`}` },
   editor: () => `<h2>Code editor</h2><textarea id="code" spellcheck="false" aria-label="Python code">${esc(editorCode)}</textarea><div class="row"><button id="run">Run</button><span class="tag">input() browser prompt తో పనిచేస్తుంది</span></div><pre id="out">Output ఇక్కడ కనిపిస్తుంది</pre>`,
   projects: () => `<h2>Projects</h2><div class="grid">${PROJECTS.map((p, i) => `<div class="card"><h3>${p.n}</h3><p class="tag">${p.d}</p><button data-p="${i}">Editor లో తెరువు</button></div>`).join("")}</div>`,
   quiz: () => `<h2>Quiz</h2><div id="qz"></div>`,
@@ -97,6 +106,7 @@ function route() {
   $("#app").innerHTML = P[pg](arg); scrollTo(0, 0); wire(pg, arg);
 }
 function wire(pg, arg) {
+  document.querySelectorAll("[data-run]").forEach(b => b.onclick = () => { const [i, k] = b.dataset.run.split(":"); editorCode = probs(i)[k].s; go("/editor") });
   if (pg === "home") hero();
   if (pg === "lesson") { $("#fin").onclick = () => markDone(+arg); $("#try").onclick = () => { editorCode = LESSONS.find(x => x.id == arg).code; go("/editor") } }
   if (pg === "editor") { $("#code").oninput = e => editorCode = e.target.value; $("#run").onclick = () => runPy($("#code").value, $("#out")) }
