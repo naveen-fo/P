@@ -285,25 +285,82 @@ window.PY_LESSONS = [
 "notes": []
 },
 {
-"id": 101,
+"id": 201,
 "level": "p",
-"title": "A1. Comprehensions & Generators",
-"te": "List/dict/set comprehensions తో ఒక్క line లో collections build చేయవచ్చు. Generator (yield) values ని lazy గా ఇస్తుంది, memory save అవుతుంది. enumerate, zip, sorted(key=) advanced code లో తరచుగా వాడతారు.",
-"code": "squares = [x * x for x in range(1, 6) if x % 2]\nwords = {w: len(w) for w in ['py', 'code']}\ndef evens(n):\n    for i in range(n):\n        if i % 2 == 0:\n            yield i\nprint(squares, words, list(evens(10)))",
+"title": "1. Introduction to Python",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "print(\"Hello, World!\")\nprint(\"Python నేర్చుకుందాం!\")",
 "notes": []
 },
 {
-"id": 102,
+"id": 202,
 "level": "p",
-"title": "A2. Decorators & Closures",
-"te": "Closure అంటే outer function variables ని గుర్తుంచుకునే inner function. Decorator ఒక function ని wrap చేసి కొత్త behavior add చేస్తుంది (@decorator). functools.wraps metadata కాపాడుతుంది.",
-"code": "import functools\ndef log(fn):\n    @functools.wraps(fn)\n    def wrapper(*a, **k):\n        print('calling', fn.__name__)\n        return fn(*a, **k)\n    return wrapper\n@log\ndef add(a, b):\n    return a + b\nprint(add(2, 3))",
+"title": "2. Variables & Constants",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "name = \"Python\"\nage = 30\nPI = 3.14159\nprint(name, age, PI)",
 "notes": []
 },
 {
-"id": 103,
+"id": 203,
 "level": "p",
-"title": "A3. Strings: Deep Dive",
+"title": "3. Data Types",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "print(type(10), type(3.14), type(\"hi\"))\nprint(int(\"100\") + 5)",
+"notes": []
+},
+{
+"id": 204,
+"level": "p",
+"title": "4. Operators",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "a, b = 10, 3\nprint(a + b, a - b, a * b)\nprint(a / b, a % b, a // b, a ** b)\nprint(a > b and b > 1)",
+"notes": []
+},
+{
+"id": 205,
+"level": "p",
+"title": "5. Conditional Statements",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "marks = 85\nif marks >= 90:\n    print(\"Grade: A\")\nelif marks >= 75:\n    print(\"Grade: B\")\nelse:\n    print(\"Fail\")",
+"notes": []
+},
+{
+"id": 206,
+"level": "p",
+"title": "6. Loops",
+"te": "Loops లో iteration protocol, comprehensions, generators, enumerate/zip, itertools, loop-else patterns deep గా చూద్దాం. సరైన loop ఎంచుకోవడం time మరియు memory మీద ప్రభావం చూపుతుంది.",
+"code": "for num in range(1, 6):\n    if num == 3:\n        continue\n    print(num)\ncount = 1\nwhile count <= 3:\n    print(\"count\", count)\n    count += 1",
+"notes": [
+[
+"Iteration protocol",
+"for x in obj → iter(obj), తర్వాత next() పదే పదే; StopIteration తో ఆగుతుంది."
+],
+[
+"Comprehension vs generator",
+"[ ] అన్నీ memory లో; ( ) generator lazy, ఒక్కొక్కటి ఇస్తుంది."
+],
+[
+"enumerate / zip",
+"Index మరియు parallel iteration; range(len()) అవసరం లేదు."
+],
+[
+"itertools",
+"count, chain, groupby, combinations, accumulate loops తగ్గిస్తాయి."
+],
+[
+"for-else",
+"break కాకపోతే else run అవుతుంది (search patterns)."
+],
+[
+"Complexity",
+"Nested loops O(n²); dict/set తో O(n) కి తగ్గించవచ్చు."
+]
+]
+},
+{
+"id": 207,
+"level": "p",
+"title": "7. Strings",
 "te": "String immutable sequence: ప్రతి operation కొత్త string create చేస్తుంది. Advanced problems లో slicing, sliding window, two pointers, stack, DP, Counter, regex కలిపి వాడతాం. ఒకే problem ని brute force మరియు optimized రెండు approaches తో చూడండి; time complexity తేడా అర్థమవుతుంది.",
 "code": "from collections import Counter\ns = 'level'\nprint(s[::-1] == s)\nprint(Counter('banana').most_common(2))\nprint(''.join(sorted('python')))",
 "notes": [
@@ -342,9 +399,9 @@ window.PY_LESSONS = [
 ]
 },
 {
-"id": 104,
+"id": 208,
 "level": "p",
-"title": "A4. Lists, Tuples, Sets & Dicts: Deep Dive",
+"title": "8. Lists & Tuples",
 "te": "List dynamic array, tuple immutable మరియు hashable, set/dict hash tables (membership O(1) average). Complexity తెలిస్తే సరైన structure ఎంచుకోవచ్చు. heapq, bisect, deque, Counter, defaultdict advanced problems కి కీలకం. ప్రతి problem కి రెండు approaches ఉన్నాయి.",
 "code": "import heapq\nfrom collections import deque, Counter\nh = [5, 1, 3]\nheapq.heapify(h)\nprint(heapq.heappop(h))\nd = deque([1, 2, 3])\nd.appendleft(0)\nprint(d, Counter('aab'))",
 "notes": [
@@ -381,5 +438,102 @@ window.PY_LESSONS = [
 "Running total + dict తో subarray problems O(n)."
 ]
 ]
+},
+{
+"id": 209,
+"level": "p",
+"title": "9. Sets & Dictionaries",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "A, B = {1, 2, 3}, {3, 4}\nprint(A | B, A & B, A - B)\nstudent = {\"name\": \"Alice\", \"age\": 21}\nfor k, v in student.items():\n    print(k, v)",
+"notes": []
+},
+{
+"id": 210,
+"level": "p",
+"title": "10. Functions",
+"te": "Functions first-class objects: variables లో store, arguments గా pass, return చేయవచ్చు. Closures, decorators, recursion + memoization, default argument pitfalls, functools deep గా నేర్చుకోండి.",
+"code": "def greet(name=\"Guest\"):\n    return f\"Hello, {name}!\"\nprint(greet(), greet(\"Nihar\"))\nsquare = lambda x: x * x\nprint(list(map(square, [1, 2, 3])))",
+"notes": [
+[
+"First-class functions",
+"def f ఒక object; map(f, data), sorted(key=f) లో pass చేస్తాం."
+],
+[
+"Mutable default trap",
+"def f(x, a=[]) లో a ఒకసారే create అవుతుంది; None వాడి లోపల create చేయండి."
+],
+[
+"Closures",
+"Inner function outer variables గుర్తుంచుకుంటుంది; nonlocal తో మార్చగలం."
+],
+[
+"Decorators",
+"f = deco(f); wrapper లో before/after logic; functools.wraps metadata కాపాడుతుంది."
+],
+[
+"Recursion",
+"Base case + చిన్న subproblem; overlapping calls కి lru_cache."
+],
+[
+"functools",
+"partial (arguments fix), reduce (fold), lru_cache (memo)."
+]
+]
+},
+{
+"id": 211,
+"level": "p",
+"title": "11. OOP",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "class Animal:\n    def speak(self):\n        print(\"Animal sound\")\nclass Dog(Animal):\n    def speak(self):\n        print(\"Dog barks\")\nDog().speak()",
+"notes": []
+},
+{
+"id": 212,
+"level": "p",
+"title": "12. Exception Handling",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "try:\n    print(10 / 0)\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\nfinally:\n    print(\"Done\")",
+"notes": []
+},
+{
+"id": 213,
+"level": "p",
+"title": "13. File Handling",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "with open(\"sample.txt\", \"w\") as f:\n    f.write(\"Hello, Python!\\n\")\nwith open(\"sample.txt\", \"r\") as f:\n    print(f.read())",
+"notes": []
+},
+{
+"id": 214,
+"level": "p",
+"title": "14. Modules",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "import math, random, json\nfrom datetime import datetime\nprint(math.sqrt(16), math.factorial(5))\nprint(random.randint(1, 10))\ndata = {\"name\": \"Nihar\", \"age\": 25}\ns = json.dumps(data)\nprint(s, json.loads(s)[\"name\"])\nprint(datetime.now().year)",
+"notes": []
+},
+{
+"id": 215,
+"level": "p",
+"title": "15. Python Libraries",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "import sqlite3\nconn = sqlite3.connect(\":memory:\")\ncur = conn.cursor()\ncur.execute(\"CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)\")\ncur.execute(\"INSERT INTO users (name) VALUES ('Alice')\")\nconn.commit()\nprint(cur.execute(\"SELECT * FROM users\").fetchall())",
+"notes": []
+},
+{
+"id": 216,
+"level": "p",
+"title": "16. Working with APIs",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "# మీ PC లో: pip install requests\n# import requests\n# r = requests.get(\"https://jsonplaceholder.typicode.com/posts/1\")\n# print(r.status_code, r.json())\nimport json\nresponse = '{\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@example.com\"}'\nuser = json.loads(response)\nprint(user[\"name\"], user[\"email\"])",
+"notes": []
+},
+{
+"id": 217,
+"level": "p",
+"title": "17. Web Development with Flask",
+"te": "Deep explanation మరియు 10 complex problems ఈ lesson కి త్వరలో add అవుతాయి.",
+"code": "from flask import Flask\napp = Flask(__name__)\n\n@app.route(\"/\")\ndef home():\n    return \"Hello, Flask!\"\n\n@app.route(\"/user/<name>\")\ndef user(name):\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    app.run(debug=True)",
+"notes": []
 }
 ];

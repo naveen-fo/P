@@ -120,86 +120,6 @@ window.PY_PROBLEMS = [
 "e": "range(n) 0..n-1; list() తో list అవుతుంది."
 },
 {
-"l": 101,
-"t": "Squares of even numbers",
-"i": "10",
-"o": "[4, 16, 36, 64, 100]",
-"s": "n = int(input())\nprint([x * x for x in range(1, n + 1) if x % 2 == 0])",
-"e": "Comprehension లో filter (if) మరియు expression (x*x)."
-},
-{
-"l": 101,
-"t": "Word length dictionary",
-"i": "python is fun",
-"o": "{'python': 6, 'is': 2, 'fun': 3}",
-"s": "print({w: len(w) for w in input().split()})",
-"e": "Dict comprehension: word → len(word)."
-},
-{
-"l": 101,
-"t": "Flatten nested list",
-"i": "[[1,2],[3,4],[5]]",
-"o": "[1, 2, 3, 4, 5]",
-"s": "import ast\nm = ast.literal_eval(input())\nprint([x for row in m for x in row])",
-"e": "literal_eval safe గా list parse చేస్తుంది; nested for outer→inner order."
-},
-{
-"l": 101,
-"t": "First n Fibonacci (generator)",
-"i": "8",
-"o": "0 1 1 2 3 5 8 13",
-"s": "def fib():\n    a, b = 0, 1\n    while True:\n        yield a\n        a, b = b, a + b\ng = fib()\nprint(*[next(g) for _ in range(int(input()))])",
-"e": "Infinite generator; next() తో కావలసినన్ని మాత్రమే తీసుకున్నాం."
-},
-{
-"l": 101,
-"t": "Group words by length",
-"i": "a bb cc d eee",
-"o": "{1: ['a', 'd'], 2: ['bb', 'cc'], 3: ['eee']}",
-"s": "from collections import defaultdict\nd = defaultdict(list)\nfor w in input().split():\n    d[len(w)].append(w)\nprint(dict(sorted(d.items())))",
-"e": "defaultdict(list) తో key లేకపోయినా list auto create అవుతుంది."
-},
-{
-"l": 102,
-"t": "Counter closure",
-"i": "3",
-"o": "1\n2\n3",
-"s": "def make():\n    c = 0\n    def inc():\n        nonlocal c\n        c += 1\n        return c\n    return inc\nf = make()\nfor _ in range(int(input())):\n    print(f())",
-"e": "inc() outer variable c ని nonlocal తో మారుస్తుంది; state గుర్తుంటుంది."
-},
-{
-"l": 102,
-"t": "Multiplier factory",
-"i": "3 5",
-"o": "15",
-"s": "def mul(n):\n    return lambda x: x * n\nn, x = map(int, input().split())\nprint(mul(n)(x))",
-"e": "mul(n) ఒక function return చేస్తుంది, అది n ని గుర్తుంచుకుంటుంది."
-},
-{
-"l": 102,
-"t": "Logging decorator",
-"i": "2 3",
-"o": "calling add\n5",
-"s": "def log(fn):\n    def w(*a):\n        print('calling', fn.__name__)\n        return fn(*a)\n    return w\n@log\ndef add(a, b):\n    return a + b\nx, y = map(int, input().split())\nprint(add(x, y))",
-"e": "@log అంటే add = log(add); wrapper ముందు print చేసి original call చేస్తుంది."
-},
-{
-"l": 102,
-"t": "Memoized Fibonacci",
-"i": "30",
-"o": "832040",
-"s": "def memo(fn):\n    c = {}\n    def w(n):\n        if n not in c:\n            c[n] = fn(n)\n        return c[n]\n    return w\n@memo\ndef fib(n):\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\nprint(fib(int(input())))",
-"e": "Cache dict తో repeated calls తప్పించాం: exponential time → linear."
-},
-{
-"l": 102,
-"t": "Repeat decorator with argument",
-"i": "3",
-"o": "Hi\nHi\nHi",
-"s": "n = int(input())\ndef repeat(k):\n    def deco(fn):\n        def w():\n            for _ in range(k):\n                fn()\n        return w\n    return deco\n@repeat(n)\ndef hi():\n    print('Hi')\nhi()",
-"e": "Arguments ఉన్న decorator = 3 levels: repeat(k) → deco(fn) → w()."
-},
-{
 "l": 4,
 "t": "All arithmetic operators",
 "i": "10 3",
@@ -480,206 +400,6 @@ window.PY_PROBLEMS = [
 "e": "lambda key తో length ఆధారంగా stable sort."
 },
 {
-"l": 103,
-"t": "Longest palindromic substring",
-"i": "babad",
-"o": "bab",
-"s": "s = input()\ndef ex(l, r):\n    while l >= 0 and r < len(s) and s[l] == s[r]:\n        l -= 1\n        r += 1\n    return s[l + 1:r]\nbest = ''\nfor i in range(len(s)):\n    for c in (ex(i, i), ex(i, i + 1)):\n        if len(c) > len(best):\n            best = c\nprint(best)",
-"e": "ప్రతి center నుండి రెండు వైపులా విస్తరించాం (odd, even). O(n²) time, O(1) space.",
-"s2": "s = input()\nbest = ''\nfor i in range(len(s)):\n    for j in range(i + 1, len(s) + 1):\n        t = s[i:j]\n        if t == t[::-1] and len(t) > len(best):\n            best = t\nprint(best)",
-"e2": "అన్ని substrings check: O(n³). సులభం కానీ నెమ్మది; ఇది baseline."
-},
-{
-"l": 103,
-"t": "Longest substring without repeats",
-"i": "abcabcbb",
-"o": "3",
-"s": "s = input()\nlast = {}\nl = best = 0\nfor r, c in enumerate(s):\n    if c in last and last[c] >= l:\n        l = last[c] + 1\n    last[c] = r\n    best = max(best, r - l + 1)\nprint(best)",
-"e": "last index dict తో left pointer నేరుగా jump. O(n).",
-"s2": "s = input()\nseen = set()\nl = best = 0\nfor r in range(len(s)):\n    while s[r] in seen:\n        seen.remove(s[l])\n        l += 1\n    seen.add(s[r])\n    best = max(best, r - l + 1)\nprint(best)",
-"e2": "Set window: duplicate వస్తే left నుండి తొలగిస్తూ కుదిస్తాం. O(n)."
-},
-{
-"l": 103,
-"t": "Group anagrams",
-"i": "eat tea tan ate nat bat",
-"o": "[['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]",
-"s": "d = {}\nfor w in input().split():\n    d.setdefault(''.join(sorted(w)), []).append(w)\nprint(list(d.values()))",
-"e": "Sorted letters key గా group. O(n·k log k).",
-"s2": "from collections import defaultdict\nd = defaultdict(list)\nfor w in input().split():\n    k = [0] * 26\n    for c in w:\n        k[ord(c) - 97] += 1\n    d[tuple(k)].append(w)\nprint(list(d.values()))",
-"e2": "26-letter count tuple key (list hashable కాదు, tuple అవుతుంది). O(n·k)."
-},
-{
-"l": 103,
-"t": "Run-length encoding",
-"i": "aaabccdddd",
-"o": "a3b1c2d4",
-"s": "s = input()\nout = ''\ni = 0\nwhile i < len(s):\n    j = i\n    while j < len(s) and s[j] == s[i]:\n        j += 1\n    out += s[i] + str(j - i)\n    i = j\nprint(out)",
-"e": "Manual two-pointer: run చివరి వరకు j కదుపుతాం.",
-"s2": "from itertools import groupby\nprint(''.join(k + str(len(list(g))) for k, g in groupby(input())))",
-"e2": "groupby వరుస equal items ని group చేస్తుంది: ఒక్క line."
-},
-{
-"l": 103,
-"t": "Caesar cipher",
-"i": "Hello, World!\n3",
-"o": "Khoor, Zruog!",
-"s": "t = input()\nk = int(input())\nr = ''\nfor c in t:\n    if c.isalpha():\n        b = 65 if c.isupper() else 97\n        r += chr((ord(c) - b + k) % 26 + b)\n    else:\n        r += c\nprint(r)",
-"e": "ord → 0..25 → shift mod 26 → chr; letters కాని వాటిని వదిలేస్తాం.",
-"s2": "import string\nt = input()\nk = int(input())\nlo, up = string.ascii_lowercase, string.ascii_uppercase\nprint(t.translate(str.maketrans(lo + up, lo[k:] + lo[:k] + up[k:] + up[:k])))",
-"e2": "maketrans mapping table ఒకసారి తయారు చేసి translate: వేగంగా."
-},
-{
-"l": 103,
-"t": "Valid brackets",
-"i": "{[()]}",
-"o": "True",
-"s": "s = input()\npair = {')': '(', ']': '[', '}': '{'}\nst = []\nok = True\nfor c in s:\n    if c in '([{':\n        st.append(c)\n    elif not st or st.pop() != pair[c]:\n        ok = False\n        break\nprint(ok and not st)",
-"e": "Stack: close bracket కి top open సరిపోవాలి. O(n).",
-"s2": "s = input()\nwhile '()' in s or '[]' in s or '{}' in s:\n    s = s.replace('()', '').replace('[]', '').replace('{}', '')\nprint(s == '')",
-"e2": "సరిపోయే pairs ని పదే పదే తొలగించాం. చిన్నది కానీ O(n²)."
-},
-{
-"l": 103,
-"t": "Word break",
-"i": "applepenapple\napple pen",
-"o": "True",
-"s": "s = input()\nw = set(input().split())\ndp = [True] + [False] * len(s)\nfor i in range(1, len(s) + 1):\n    dp[i] = any(dp[j] and s[j:i] in w for j in range(i))\nprint(dp[-1])",
-"e": "dp[i] = prefix i ని words తో తయారు చేయవచ్చా. Bottom-up.",
-"s2": "from functools import lru_cache\ns = input()\nw = set(input().split())\n@lru_cache(None)\ndef f(i):\n    return i == len(s) or any(s.startswith(x, i) and f(i + len(x)) for x in w)\nprint(f(0))",
-"e2": "Top-down recursion + memo: అవసరమైన states మాత్రమే compute."
-},
-{
-"l": 103,
-"t": "Minimum window substring",
-"i": "ADOBECODEBANC\nABC",
-"o": "BANC",
-"s": "from collections import Counter\ns = input()\nt = input()\nneed = Counter(t)\nmiss = len(t)\nl = 0\nbest = ''\nfor r, c in enumerate(s):\n    if need[c] > 0:\n        miss -= 1\n    need[c] -= 1\n    while miss == 0:\n        if not best or r - l + 1 < len(best):\n            best = s[l:r + 1]\n        need[s[l]] += 1\n        if need[s[l]] > 0:\n            miss += 1\n        l += 1\nprint(best)",
-"e": "విస్తరించి, అన్నీ దొరికాక కుదించాం. O(n).",
-"s2": "from collections import Counter\ns = input()\nt = input()\nneed = Counter(t)\ndef f():\n    for L in range(len(t), len(s) + 1):\n        for i in range(len(s) - L + 1):\n            if not need - Counter(s[i:i + L]):\n                return s[i:i + L]\nprint(f())",
-"e2": "Length పెంచుతూ ప్రతి window check: మొదటిది shortest. O(n²·k)."
-},
-{
-"l": 103,
-"t": "Decode nested string",
-"i": "3[a2[c]]",
-"o": "accaccacc",
-"s": "s = input()\nst = []\nnum = 0\ncur = ''\nfor c in s:\n    if c.isdigit():\n        num = num * 10 + int(c)\n    elif c == '[':\n        st.append((cur, num))\n        cur, num = '', 0\n    elif c == ']':\n        p, n = st.pop()\n        cur = p + cur * n\n    else:\n        cur += c\nprint(cur)",
-"e": "Stack లో (ముందు string, repeat count) దాచాం.",
-"s2": "import re\ns = input()\nwhile '[' in s:\n    s = re.sub(r'(\\d+)\\[([a-z]*)\\]', lambda m: m.group(2) * int(m.group(1)), s)\nprint(s)",
-"e2": "లోపలి bracket నుండి regex తో expand చేస్తూ బయటకు వచ్చాం."
-},
-{
-"l": 103,
-"t": "Longest common subsequence",
-"i": "abcde\nace",
-"o": "3",
-"s": "a = input()\nb = input()\ndp = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]\nfor i in range(len(a)):\n    for j in range(len(b)):\n        dp[i + 1][j + 1] = dp[i][j] + 1 if a[i] == b[j] else max(dp[i][j + 1], dp[i + 1][j])\nprint(dp[-1][-1])",
-"e": "2D table: match అయితే diagonal+1, లేకపోతే max. O(nm).",
-"s2": "from functools import lru_cache\na = input()\nb = input()\n@lru_cache(None)\ndef f(i, j):\n    if i == len(a) or j == len(b):\n        return 0\n    if a[i] == b[j]:\n        return 1 + f(i + 1, j + 1)\n    return max(f(i + 1, j), f(i, j + 1))\nprint(f(0, 0))",
-"e2": "Recursion + memo: అదే logic, top-down."
-},
-{
-"l": 104,
-"t": "Two sum (indices)",
-"i": "2 7 11 15\n9",
-"o": "0 1",
-"s": "a = list(map(int, input().split()))\nt = int(input())\nseen = {}\nfor i, x in enumerate(a):\n    if t - x in seen:\n        print(seen[t - x], i)\n        break\n    seen[x] = i",
-"e": "Hash map లో ఇప్పటి వరకు చూసినవి; complement దొరికితే answer. O(n).",
-"s2": "a = list(map(int, input().split()))\nt = int(input())\nprint(*next((i, j) for i in range(len(a)) for j in range(i + 1, len(a)) if a[i] + a[j] == t))",
-"e2": "అన్ని pairs check: O(n²)."
-},
-{
-"l": 104,
-"t": "Merge intervals",
-"i": "[[1,3],[2,6],[8,10],[15,18]]",
-"o": "[[1, 6], [8, 10], [15, 18]]",
-"s": "import ast\niv = sorted(ast.literal_eval(input()))\nout = []\nfor s, e in iv:\n    if out and s <= out[-1][1]:\n        out[-1][1] = max(out[-1][1], e)\n    else:\n        out.append([s, e])\nprint(out)",
-"e": "Start తో sort; overlap అయితే end పొడిగించాం.",
-"s2": "import ast\nfrom functools import reduce\niv = sorted(ast.literal_eval(input()))\ndef f(acc, x):\n    if acc and x[0] <= acc[-1][1]:\n        acc[-1][1] = max(acc[-1][1], x[1])\n    else:\n        acc.append(list(x))\n    return acc\nprint(reduce(f, iv, []))",
-"e2": "అదే logic reduce తో functional style."
-},
-{
-"l": 104,
-"t": "Product except self",
-"i": "1 2 3 4",
-"o": "[24, 12, 8, 6]",
-"s": "a = list(map(int, input().split()))\nn = len(a)\nres = [1] * n\np = 1\nfor i in range(n):\n    res[i] = p\n    p *= a[i]\np = 1\nfor i in range(n - 1, -1, -1):\n    res[i] *= p\n    p *= a[i]\nprint(res)",
-"e": "Left products తర్వాత right products గుణించాం. O(n), division లేదు.",
-"s2": "from math import prod\na = list(map(int, input().split()))\nprint([prod(a[:i] + a[i + 1:]) for i in range(len(a))])",
-"e2": "ప్రతి index కి మిగతా అన్నీ గుణించాం: O(n²)."
-},
-{
-"l": 104,
-"t": "Top K frequent",
-"i": "1 1 1 2 2 3\n2",
-"o": "[1, 2]",
-"s": "from collections import Counter\na = input().split()\nk = int(input())\nprint([int(x) for x, _ in Counter(a).most_common(k)])",
-"e": "Counter.most_common(k) నేరుగా.",
-"s2": "import heapq\nfrom collections import Counter\na = input().split()\nk = int(input())\nc = Counter(a)\nprint([int(x) for x in heapq.nlargest(k, c, key=c.get)])",
-"e2": "heap తో top k: O(n log k)."
-},
-{
-"l": 104,
-"t": "Longest consecutive sequence",
-"i": "100 4 200 1 3 2",
-"o": "4",
-"s": "s = set(map(int, input().split()))\nbest = 0\nfor x in s:\n    if x - 1 not in s:\n        y = x\n        while y + 1 in s:\n            y += 1\n        best = max(best, y - x + 1)\nprint(best)",
-"e": "Sequence ప్రారంభం (x-1 లేనిది) నుండి మాత్రమే count: O(n).",
-"s2": "a = sorted(set(map(int, input().split())))\nbest = cur = 1\nfor i in range(1, len(a)):\n    cur = cur + 1 if a[i] == a[i - 1] + 1 else 1\n    best = max(best, cur)\nprint(best)",
-"e2": "Sort చేసి scan: O(n log n), సులభం."
-},
-{
-"l": 104,
-"t": "Rotate matrix 90° clockwise",
-"i": "[[1,2,3],[4,5,6],[7,8,9]]",
-"o": "[[7, 4, 1], [8, 5, 2], [9, 6, 3]]",
-"s": "import ast\nm = ast.literal_eval(input())\nprint([list(r) for r in zip(*m[::-1])])",
-"e": "Rows reverse చేసి zip(*) తో transpose.",
-"s2": "import ast\nm = ast.literal_eval(input())\nn = len(m)\nfor i in range(n):\n    for j in range(i + 1, n):\n        m[i][j], m[j][i] = m[j][i], m[i][j]\nfor r in m:\n    r.reverse()\nprint(m)",
-"e2": "In-place: transpose చేసి ప్రతి row reverse."
-},
-{
-"l": 104,
-"t": "Sliding window maximum",
-"i": "1 3 -1 -3 5 3 6 7\n3",
-"o": "[3, 3, 5, 5, 6, 7]",
-"s": "from collections import deque\na = list(map(int, input().split()))\nk = int(input())\ndq = deque()\nout = []\nfor i, x in enumerate(a):\n    while dq and a[dq[-1]] <= x:\n        dq.pop()\n    dq.append(i)\n    if dq[0] <= i - k:\n        dq.popleft()\n    if i >= k - 1:\n        out.append(a[dq[0]])\nprint(out)",
-"e": "Decreasing deque: front లో ఎప్పుడూ max index. O(n).",
-"s2": "a = list(map(int, input().split()))\nk = int(input())\nprint([max(a[i:i + k]) for i in range(len(a) - k + 1)])",
-"e2": "ప్రతి window లో max(): O(n·k)."
-},
-{
-"l": 104,
-"t": "Count subarrays with sum K",
-"i": "3 4 7 2 -3 1 4 2\n7",
-"o": "4",
-"s": "from collections import defaultdict\na = list(map(int, input().split()))\nk = int(input())\nc = defaultdict(int)\nc[0] = 1\ns = res = 0\nfor x in a:\n    s += x\n    res += c[s - k]\n    c[s] += 1\nprint(res)",
-"e": "Prefix sum: s-k ముందు ఎన్నిసార్లు వచ్చిందో count. O(n).",
-"s2": "a = list(map(int, input().split()))\nk = int(input())\nprint(sum(sum(a[i:j]) == k for i in range(len(a)) for j in range(i + 1, len(a) + 1)))",
-"e2": "అన్ని subarrays: O(n³) (negatives ఉన్నప్పుడు window పనిచేయదు)."
-},
-{
-"l": 104,
-"t": "Kth largest element",
-"i": "3 2 1 5 6 4\n2",
-"o": "5",
-"s": "import heapq\na = list(map(int, input().split()))\nk = int(input())\nh = a[:k]\nheapq.heapify(h)\nfor x in a[k:]:\n    if x > h[0]:\n        heapq.heapreplace(h, x)\nprint(h[0])",
-"e": "Size-k min-heap: root = kth largest. O(n log k).",
-"s2": "a = sorted(map(int, input().split()), reverse=True)\nprint(a[int(input()) - 1])",
-"e2": "Sort చేసి index: O(n log n), సులభం."
-},
-{
-"l": 104,
-"t": "Search in rotated sorted array",
-"i": "4 5 6 7 0 1 2\n0",
-"o": "4",
-"s": "a = list(map(int, input().split()))\nt = int(input())\nlo, hi = 0, len(a) - 1\nres = -1\nwhile lo <= hi:\n    m = (lo + hi) // 2\n    if a[m] == t:\n        res = m\n        break\n    if a[lo] <= a[m]:\n        if a[lo] <= t < a[m]:\n            hi = m - 1\n        else:\n            lo = m + 1\n    else:\n        if a[m] < t <= a[hi]:\n            lo = m + 1\n        else:\n            hi = m - 1\nprint(res)",
-"e": "ఏ half sorted గా ఉందో చూసి binary search: O(log n).",
-"s2": "a = list(map(int, input().split()))\nt = int(input())\nprint(a.index(t) if t in a else -1)",
-"e2": "Linear search: O(n). సరైనదే కానీ rotated structure వాడలేదు."
-},
-{
 "l": 11,
 "t": "Rectangle class",
 "i": "4 5",
@@ -958,5 +678,385 @@ window.PY_PROBLEMS = [
 "o": "405 Method Not Allowed",
 "s": "allowed = {'GET', 'POST'}\nm = input().upper()\nprint('OK' if m in allowed else '405 Method Not Allowed')",
 "e": "methods=[...] లో లేని method కి 405 వస్తుంది."
+},
+{
+"l": 206,
+"t": "Squares of even numbers",
+"i": "10",
+"o": "[4, 16, 36, 64, 100]",
+"s": "n = int(input())\nprint([x * x for x in range(1, n + 1) if x % 2 == 0])",
+"e": "Comprehension లో filter (if) మరియు expression (x*x)."
+},
+{
+"l": 206,
+"t": "Word length dictionary",
+"i": "python is fun",
+"o": "{'python': 6, 'is': 2, 'fun': 3}",
+"s": "print({w: len(w) for w in input().split()})",
+"e": "Dict comprehension: word → len(word)."
+},
+{
+"l": 206,
+"t": "Flatten nested list",
+"i": "[[1,2],[3,4],[5]]",
+"o": "[1, 2, 3, 4, 5]",
+"s": "import ast\nm = ast.literal_eval(input())\nprint([x for row in m for x in row])",
+"e": "literal_eval safe గా list parse చేస్తుంది; nested for outer→inner order."
+},
+{
+"l": 206,
+"t": "First n Fibonacci (generator)",
+"i": "8",
+"o": "0 1 1 2 3 5 8 13",
+"s": "def fib():\n    a, b = 0, 1\n    while True:\n        yield a\n        a, b = b, a + b\ng = fib()\nprint(*[next(g) for _ in range(int(input()))])",
+"e": "Infinite generator; next() తో కావలసినన్ని మాత్రమే తీసుకున్నాం."
+},
+{
+"l": 206,
+"t": "Group words by length",
+"i": "a bb cc d eee",
+"o": "{1: ['a', 'd'], 2: ['bb', 'cc'], 3: ['eee']}",
+"s": "from collections import defaultdict\nd = defaultdict(list)\nfor w in input().split():\n    d[len(w)].append(w)\nprint(dict(sorted(d.items())))",
+"e": "defaultdict(list) తో key లేకపోయినా list auto create అవుతుంది."
+},
+{
+"l": 206,
+"t": "Primes up to n",
+"i": "30",
+"o": "[2, 3, 5, 7, 11, 13, 17, 19, 23, 29]",
+"s": "n = int(input())\nis_p = [True] * (n + 1)\nis_p[0:2] = [False] * 2\nfor i in range(2, int(n ** .5) + 1):\n    if is_p[i]:\n        for j in range(i * i, n + 1, i):\n            is_p[j] = False\nprint([i for i in range(n + 1) if is_p[i]])",
+"e": "Sieve: ప్రతి prime multiples ని కొట్టేస్తాం. O(n log log n).",
+"s2": "n = int(input())\nprint([x for x in range(2, n + 1) if all(x % d for d in range(2, int(x ** .5) + 1))])",
+"e2": "ప్రతి number ని √x వరకు divide చేసి చూశాం: సులభం, నెమ్మది."
+},
+{
+"l": 206,
+"t": "Pascal's triangle row",
+"i": "5",
+"o": "[1, 5, 10, 10, 5, 1]",
+"s": "n = int(input())\nrow = [1]\nfor _ in range(n):\n    row = [a + b for a, b in zip([0] + row, row + [0])]\nprint(row)",
+"e": "ముందు row ని shift చేసి zip తో కూడాం.",
+"s2": "from math import comb\nn = int(input())\nprint([comb(n, k) for k in range(n + 1)])",
+"e2": "Row n లో k వ entry = C(n, k)."
+},
+{
+"l": 206,
+"t": "Spiral order",
+"i": "[[1,2,3],[4,5,6],[7,8,9]]",
+"o": "[1, 2, 3, 6, 9, 8, 7, 4, 5]",
+"s": "import ast\nm = ast.literal_eval(input())\nout = []\nt, b, l, r = 0, len(m) - 1, 0, len(m[0]) - 1\nwhile t <= b and l <= r:\n    out += m[t][l:r + 1]\n    t += 1\n    out += [m[i][r] for i in range(t, b + 1)]\n    r -= 1\n    if t <= b:\n        out += m[b][l:r + 1][::-1]\n        b -= 1\n    if l <= r:\n        out += [m[i][l] for i in range(b, t - 1, -1)]\n        l += 1\nprint(out)",
+"e": "నాలుగు boundaries కుదిస్తూ చుట్టూ తిరిగాం.",
+"s2": "import ast\nm = ast.literal_eval(input())\nout = []\nwhile m:\n    out += m.pop(0)\n    m = [list(r) for r in zip(*m)][::-1]\nprint(out)",
+"e2": "మొదటి row తీసి, మిగిలిన matrix ని anticlockwise తిప్పాం."
+},
+{
+"l": 206,
+"t": "Collatz steps",
+"i": "27",
+"o": "111",
+"s": "n = int(input())\nc = 0\nwhile n != 1:\n    n = n // 2 if n % 2 == 0 else 3 * n + 1\n    c += 1\nprint(c)",
+"e": "1 చేరే వరకు while loop.",
+"s2": "from functools import lru_cache\n@lru_cache(None)\ndef f(n):\n    return 0 if n == 1 else 1 + f(n // 2 if n % 2 == 0 else 3 * n + 1)\nprint(f(int(input())))",
+"e2": "Recursion + cache: పునరావృత chains మళ్ళీ లెక్కించం."
+},
+{
+"l": 206,
+"t": "Maximum subarray sum",
+"i": "-2 1 -3 4 -1 2 1 -5 4",
+"o": "6",
+"s": "a = list(map(int, input().split()))\ncur = best = a[0]\nfor x in a[1:]:\n    cur = max(x, cur + x)\n    best = max(best, cur)\nprint(best)",
+"e": "Kadane: ప్రతి చోట కొనసాగించాలా కొత్తగా మొదలుపెట్టాలా. O(n).",
+"s2": "from itertools import accumulate\na = list(map(int, input().split()))\np = [0] + list(accumulate(a))\nprint(max(p[j] - min(p[:j]) for j in range(1, len(p))))",
+"e2": "Prefix sums: p[j] - (ముందు కనిష్ట prefix)."
+},
+{
+"l": 207,
+"t": "Longest palindromic substring",
+"i": "babad",
+"o": "bab",
+"s": "s = input()\ndef ex(l, r):\n    while l >= 0 and r < len(s) and s[l] == s[r]:\n        l -= 1\n        r += 1\n    return s[l + 1:r]\nbest = ''\nfor i in range(len(s)):\n    for c in (ex(i, i), ex(i, i + 1)):\n        if len(c) > len(best):\n            best = c\nprint(best)",
+"e": "ప్రతి center నుండి రెండు వైపులా విస్తరించాం (odd, even). O(n²) time, O(1) space.",
+"s2": "s = input()\nbest = ''\nfor i in range(len(s)):\n    for j in range(i + 1, len(s) + 1):\n        t = s[i:j]\n        if t == t[::-1] and len(t) > len(best):\n            best = t\nprint(best)",
+"e2": "అన్ని substrings check: O(n³). సులభం కానీ నెమ్మది; ఇది baseline."
+},
+{
+"l": 207,
+"t": "Longest substring without repeats",
+"i": "abcabcbb",
+"o": "3",
+"s": "s = input()\nlast = {}\nl = best = 0\nfor r, c in enumerate(s):\n    if c in last and last[c] >= l:\n        l = last[c] + 1\n    last[c] = r\n    best = max(best, r - l + 1)\nprint(best)",
+"e": "last index dict తో left pointer నేరుగా jump. O(n).",
+"s2": "s = input()\nseen = set()\nl = best = 0\nfor r in range(len(s)):\n    while s[r] in seen:\n        seen.remove(s[l])\n        l += 1\n    seen.add(s[r])\n    best = max(best, r - l + 1)\nprint(best)",
+"e2": "Set window: duplicate వస్తే left నుండి తొలగిస్తూ కుదిస్తాం. O(n)."
+},
+{
+"l": 207,
+"t": "Group anagrams",
+"i": "eat tea tan ate nat bat",
+"o": "[['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]",
+"s": "d = {}\nfor w in input().split():\n    d.setdefault(''.join(sorted(w)), []).append(w)\nprint(list(d.values()))",
+"e": "Sorted letters key గా group. O(n·k log k).",
+"s2": "from collections import defaultdict\nd = defaultdict(list)\nfor w in input().split():\n    k = [0] * 26\n    for c in w:\n        k[ord(c) - 97] += 1\n    d[tuple(k)].append(w)\nprint(list(d.values()))",
+"e2": "26-letter count tuple key (list hashable కాదు, tuple అవుతుంది). O(n·k)."
+},
+{
+"l": 207,
+"t": "Run-length encoding",
+"i": "aaabccdddd",
+"o": "a3b1c2d4",
+"s": "s = input()\nout = ''\ni = 0\nwhile i < len(s):\n    j = i\n    while j < len(s) and s[j] == s[i]:\n        j += 1\n    out += s[i] + str(j - i)\n    i = j\nprint(out)",
+"e": "Manual two-pointer: run చివరి వరకు j కదుపుతాం.",
+"s2": "from itertools import groupby\nprint(''.join(k + str(len(list(g))) for k, g in groupby(input())))",
+"e2": "groupby వరుస equal items ని group చేస్తుంది: ఒక్క line."
+},
+{
+"l": 207,
+"t": "Caesar cipher",
+"i": "Hello, World!\n3",
+"o": "Khoor, Zruog!",
+"s": "t = input()\nk = int(input())\nr = ''\nfor c in t:\n    if c.isalpha():\n        b = 65 if c.isupper() else 97\n        r += chr((ord(c) - b + k) % 26 + b)\n    else:\n        r += c\nprint(r)",
+"e": "ord → 0..25 → shift mod 26 → chr; letters కాని వాటిని వదిలేస్తాం.",
+"s2": "import string\nt = input()\nk = int(input())\nlo, up = string.ascii_lowercase, string.ascii_uppercase\nprint(t.translate(str.maketrans(lo + up, lo[k:] + lo[:k] + up[k:] + up[:k])))",
+"e2": "maketrans mapping table ఒకసారి తయారు చేసి translate: వేగంగా."
+},
+{
+"l": 207,
+"t": "Valid brackets",
+"i": "{[()]}",
+"o": "True",
+"s": "s = input()\npair = {')': '(', ']': '[', '}': '{'}\nst = []\nok = True\nfor c in s:\n    if c in '([{':\n        st.append(c)\n    elif not st or st.pop() != pair[c]:\n        ok = False\n        break\nprint(ok and not st)",
+"e": "Stack: close bracket కి top open సరిపోవాలి. O(n).",
+"s2": "s = input()\nwhile '()' in s or '[]' in s or '{}' in s:\n    s = s.replace('()', '').replace('[]', '').replace('{}', '')\nprint(s == '')",
+"e2": "సరిపోయే pairs ని పదే పదే తొలగించాం. చిన్నది కానీ O(n²)."
+},
+{
+"l": 207,
+"t": "Word break",
+"i": "applepenapple\napple pen",
+"o": "True",
+"s": "s = input()\nw = set(input().split())\ndp = [True] + [False] * len(s)\nfor i in range(1, len(s) + 1):\n    dp[i] = any(dp[j] and s[j:i] in w for j in range(i))\nprint(dp[-1])",
+"e": "dp[i] = prefix i ని words తో తయారు చేయవచ్చా. Bottom-up.",
+"s2": "from functools import lru_cache\ns = input()\nw = set(input().split())\n@lru_cache(None)\ndef f(i):\n    return i == len(s) or any(s.startswith(x, i) and f(i + len(x)) for x in w)\nprint(f(0))",
+"e2": "Top-down recursion + memo: అవసరమైన states మాత్రమే compute."
+},
+{
+"l": 207,
+"t": "Minimum window substring",
+"i": "ADOBECODEBANC\nABC",
+"o": "BANC",
+"s": "from collections import Counter\ns = input()\nt = input()\nneed = Counter(t)\nmiss = len(t)\nl = 0\nbest = ''\nfor r, c in enumerate(s):\n    if need[c] > 0:\n        miss -= 1\n    need[c] -= 1\n    while miss == 0:\n        if not best or r - l + 1 < len(best):\n            best = s[l:r + 1]\n        need[s[l]] += 1\n        if need[s[l]] > 0:\n            miss += 1\n        l += 1\nprint(best)",
+"e": "విస్తరించి, అన్నీ దొరికాక కుదించాం. O(n).",
+"s2": "from collections import Counter\ns = input()\nt = input()\nneed = Counter(t)\ndef f():\n    for L in range(len(t), len(s) + 1):\n        for i in range(len(s) - L + 1):\n            if not need - Counter(s[i:i + L]):\n                return s[i:i + L]\nprint(f())",
+"e2": "Length పెంచుతూ ప్రతి window check: మొదటిది shortest. O(n²·k)."
+},
+{
+"l": 207,
+"t": "Decode nested string",
+"i": "3[a2[c]]",
+"o": "accaccacc",
+"s": "s = input()\nst = []\nnum = 0\ncur = ''\nfor c in s:\n    if c.isdigit():\n        num = num * 10 + int(c)\n    elif c == '[':\n        st.append((cur, num))\n        cur, num = '', 0\n    elif c == ']':\n        p, n = st.pop()\n        cur = p + cur * n\n    else:\n        cur += c\nprint(cur)",
+"e": "Stack లో (ముందు string, repeat count) దాచాం.",
+"s2": "import re\ns = input()\nwhile '[' in s:\n    s = re.sub(r'(\\d+)\\[([a-z]*)\\]', lambda m: m.group(2) * int(m.group(1)), s)\nprint(s)",
+"e2": "లోపలి bracket నుండి regex తో expand చేస్తూ బయటకు వచ్చాం."
+},
+{
+"l": 207,
+"t": "Longest common subsequence",
+"i": "abcde\nace",
+"o": "3",
+"s": "a = input()\nb = input()\ndp = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]\nfor i in range(len(a)):\n    for j in range(len(b)):\n        dp[i + 1][j + 1] = dp[i][j] + 1 if a[i] == b[j] else max(dp[i][j + 1], dp[i + 1][j])\nprint(dp[-1][-1])",
+"e": "2D table: match అయితే diagonal+1, లేకపోతే max. O(nm).",
+"s2": "from functools import lru_cache\na = input()\nb = input()\n@lru_cache(None)\ndef f(i, j):\n    if i == len(a) or j == len(b):\n        return 0\n    if a[i] == b[j]:\n        return 1 + f(i + 1, j + 1)\n    return max(f(i + 1, j), f(i, j + 1))\nprint(f(0, 0))",
+"e2": "Recursion + memo: అదే logic, top-down."
+},
+{
+"l": 208,
+"t": "Two sum (indices)",
+"i": "2 7 11 15\n9",
+"o": "0 1",
+"s": "a = list(map(int, input().split()))\nt = int(input())\nseen = {}\nfor i, x in enumerate(a):\n    if t - x in seen:\n        print(seen[t - x], i)\n        break\n    seen[x] = i",
+"e": "Hash map లో ఇప్పటి వరకు చూసినవి; complement దొరికితే answer. O(n).",
+"s2": "a = list(map(int, input().split()))\nt = int(input())\nprint(*next((i, j) for i in range(len(a)) for j in range(i + 1, len(a)) if a[i] + a[j] == t))",
+"e2": "అన్ని pairs check: O(n²)."
+},
+{
+"l": 208,
+"t": "Merge intervals",
+"i": "[[1,3],[2,6],[8,10],[15,18]]",
+"o": "[[1, 6], [8, 10], [15, 18]]",
+"s": "import ast\niv = sorted(ast.literal_eval(input()))\nout = []\nfor s, e in iv:\n    if out and s <= out[-1][1]:\n        out[-1][1] = max(out[-1][1], e)\n    else:\n        out.append([s, e])\nprint(out)",
+"e": "Start తో sort; overlap అయితే end పొడిగించాం.",
+"s2": "import ast\nfrom functools import reduce\niv = sorted(ast.literal_eval(input()))\ndef f(acc, x):\n    if acc and x[0] <= acc[-1][1]:\n        acc[-1][1] = max(acc[-1][1], x[1])\n    else:\n        acc.append(list(x))\n    return acc\nprint(reduce(f, iv, []))",
+"e2": "అదే logic reduce తో functional style."
+},
+{
+"l": 208,
+"t": "Product except self",
+"i": "1 2 3 4",
+"o": "[24, 12, 8, 6]",
+"s": "a = list(map(int, input().split()))\nn = len(a)\nres = [1] * n\np = 1\nfor i in range(n):\n    res[i] = p\n    p *= a[i]\np = 1\nfor i in range(n - 1, -1, -1):\n    res[i] *= p\n    p *= a[i]\nprint(res)",
+"e": "Left products తర్వాత right products గుణించాం. O(n), division లేదు.",
+"s2": "from math import prod\na = list(map(int, input().split()))\nprint([prod(a[:i] + a[i + 1:]) for i in range(len(a))])",
+"e2": "ప్రతి index కి మిగతా అన్నీ గుణించాం: O(n²)."
+},
+{
+"l": 208,
+"t": "Top K frequent",
+"i": "1 1 1 2 2 3\n2",
+"o": "[1, 2]",
+"s": "from collections import Counter\na = input().split()\nk = int(input())\nprint([int(x) for x, _ in Counter(a).most_common(k)])",
+"e": "Counter.most_common(k) నేరుగా.",
+"s2": "import heapq\nfrom collections import Counter\na = input().split()\nk = int(input())\nc = Counter(a)\nprint([int(x) for x in heapq.nlargest(k, c, key=c.get)])",
+"e2": "heap తో top k: O(n log k)."
+},
+{
+"l": 208,
+"t": "Longest consecutive sequence",
+"i": "100 4 200 1 3 2",
+"o": "4",
+"s": "s = set(map(int, input().split()))\nbest = 0\nfor x in s:\n    if x - 1 not in s:\n        y = x\n        while y + 1 in s:\n            y += 1\n        best = max(best, y - x + 1)\nprint(best)",
+"e": "Sequence ప్రారంభం (x-1 లేనిది) నుండి మాత్రమే count: O(n).",
+"s2": "a = sorted(set(map(int, input().split())))\nbest = cur = 1\nfor i in range(1, len(a)):\n    cur = cur + 1 if a[i] == a[i - 1] + 1 else 1\n    best = max(best, cur)\nprint(best)",
+"e2": "Sort చేసి scan: O(n log n), సులభం."
+},
+{
+"l": 208,
+"t": "Rotate matrix 90° clockwise",
+"i": "[[1,2,3],[4,5,6],[7,8,9]]",
+"o": "[[7, 4, 1], [8, 5, 2], [9, 6, 3]]",
+"s": "import ast\nm = ast.literal_eval(input())\nprint([list(r) for r in zip(*m[::-1])])",
+"e": "Rows reverse చేసి zip(*) తో transpose.",
+"s2": "import ast\nm = ast.literal_eval(input())\nn = len(m)\nfor i in range(n):\n    for j in range(i + 1, n):\n        m[i][j], m[j][i] = m[j][i], m[i][j]\nfor r in m:\n    r.reverse()\nprint(m)",
+"e2": "In-place: transpose చేసి ప్రతి row reverse."
+},
+{
+"l": 208,
+"t": "Sliding window maximum",
+"i": "1 3 -1 -3 5 3 6 7\n3",
+"o": "[3, 3, 5, 5, 6, 7]",
+"s": "from collections import deque\na = list(map(int, input().split()))\nk = int(input())\ndq = deque()\nout = []\nfor i, x in enumerate(a):\n    while dq and a[dq[-1]] <= x:\n        dq.pop()\n    dq.append(i)\n    if dq[0] <= i - k:\n        dq.popleft()\n    if i >= k - 1:\n        out.append(a[dq[0]])\nprint(out)",
+"e": "Decreasing deque: front లో ఎప్పుడూ max index. O(n).",
+"s2": "a = list(map(int, input().split()))\nk = int(input())\nprint([max(a[i:i + k]) for i in range(len(a) - k + 1)])",
+"e2": "ప్రతి window లో max(): O(n·k)."
+},
+{
+"l": 208,
+"t": "Count subarrays with sum K",
+"i": "3 4 7 2 -3 1 4 2\n7",
+"o": "4",
+"s": "from collections import defaultdict\na = list(map(int, input().split()))\nk = int(input())\nc = defaultdict(int)\nc[0] = 1\ns = res = 0\nfor x in a:\n    s += x\n    res += c[s - k]\n    c[s] += 1\nprint(res)",
+"e": "Prefix sum: s-k ముందు ఎన్నిసార్లు వచ్చిందో count. O(n).",
+"s2": "a = list(map(int, input().split()))\nk = int(input())\nprint(sum(sum(a[i:j]) == k for i in range(len(a)) for j in range(i + 1, len(a) + 1)))",
+"e2": "అన్ని subarrays: O(n³) (negatives ఉన్నప్పుడు window పనిచేయదు)."
+},
+{
+"l": 208,
+"t": "Kth largest element",
+"i": "3 2 1 5 6 4\n2",
+"o": "5",
+"s": "import heapq\na = list(map(int, input().split()))\nk = int(input())\nh = a[:k]\nheapq.heapify(h)\nfor x in a[k:]:\n    if x > h[0]:\n        heapq.heapreplace(h, x)\nprint(h[0])",
+"e": "Size-k min-heap: root = kth largest. O(n log k).",
+"s2": "a = sorted(map(int, input().split()), reverse=True)\nprint(a[int(input()) - 1])",
+"e2": "Sort చేసి index: O(n log n), సులభం."
+},
+{
+"l": 208,
+"t": "Search in rotated sorted array",
+"i": "4 5 6 7 0 1 2\n0",
+"o": "4",
+"s": "a = list(map(int, input().split()))\nt = int(input())\nlo, hi = 0, len(a) - 1\nres = -1\nwhile lo <= hi:\n    m = (lo + hi) // 2\n    if a[m] == t:\n        res = m\n        break\n    if a[lo] <= a[m]:\n        if a[lo] <= t < a[m]:\n            hi = m - 1\n        else:\n            lo = m + 1\n    else:\n        if a[m] < t <= a[hi]:\n            lo = m + 1\n        else:\n            hi = m - 1\nprint(res)",
+"e": "ఏ half sorted గా ఉందో చూసి binary search: O(log n).",
+"s2": "a = list(map(int, input().split()))\nt = int(input())\nprint(a.index(t) if t in a else -1)",
+"e2": "Linear search: O(n). సరైనదే కానీ rotated structure వాడలేదు."
+},
+{
+"l": 210,
+"t": "Counter closure",
+"i": "3",
+"o": "1\n2\n3",
+"s": "def make():\n    c = 0\n    def inc():\n        nonlocal c\n        c += 1\n        return c\n    return inc\nf = make()\nfor _ in range(int(input())):\n    print(f())",
+"e": "inc() outer variable c ని nonlocal తో మారుస్తుంది; state గుర్తుంటుంది."
+},
+{
+"l": 210,
+"t": "Multiplier factory",
+"i": "3 5",
+"o": "15",
+"s": "def mul(n):\n    return lambda x: x * n\nn, x = map(int, input().split())\nprint(mul(n)(x))",
+"e": "mul(n) ఒక function return చేస్తుంది, అది n ని గుర్తుంచుకుంటుంది."
+},
+{
+"l": 210,
+"t": "Logging decorator",
+"i": "2 3",
+"o": "calling add\n5",
+"s": "def log(fn):\n    def w(*a):\n        print('calling', fn.__name__)\n        return fn(*a)\n    return w\n@log\ndef add(a, b):\n    return a + b\nx, y = map(int, input().split())\nprint(add(x, y))",
+"e": "@log అంటే add = log(add); wrapper ముందు print చేసి original call చేస్తుంది."
+},
+{
+"l": 210,
+"t": "Memoized Fibonacci",
+"i": "30",
+"o": "832040",
+"s": "def memo(fn):\n    c = {}\n    def w(n):\n        if n not in c:\n            c[n] = fn(n)\n        return c[n]\n    return w\n@memo\ndef fib(n):\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\nprint(fib(int(input())))",
+"e": "Cache dict తో repeated calls తప్పించాం: exponential time → linear."
+},
+{
+"l": 210,
+"t": "Repeat decorator with argument",
+"i": "3",
+"o": "Hi\nHi\nHi",
+"s": "n = int(input())\ndef repeat(k):\n    def deco(fn):\n        def w():\n            for _ in range(k):\n                fn()\n        return w\n    return deco\n@repeat(n)\ndef hi():\n    print('Hi')\nhi()",
+"e": "Arguments ఉన్న decorator = 3 levels: repeat(k) → deco(fn) → w()."
+},
+{
+"l": 210,
+"t": "Compose functions",
+"i": "3",
+"o": "8",
+"s": "def compose(*fs):\n    def run(x):\n        for f in reversed(fs):\n            x = f(x)\n        return x\n    return run\nadd1 = lambda x: x + 1\ndbl = lambda x: x * 2\nprint(compose(dbl, add1)(int(input())))",
+"e": "compose(g, f)(x) = g(f(x)); functions ని values లా వాడాం.",
+"s2": "from functools import reduce\nadd1 = lambda x: x + 1\ndbl = lambda x: x * 2\nprint(reduce(lambda x, f: f(x), [add1, dbl], int(input())))",
+"e2": "reduce తో functions ని వరుసగా apply."
+},
+{
+"l": 210,
+"t": "Tower of Hanoi moves",
+"i": "5",
+"o": "31",
+"s": "def h(n):\n    return 0 if n == 0 else 2 * h(n - 1) + 1\nprint(h(int(input())))",
+"e": "n-1 discs రెండుసార్లు + 1 move.",
+"s2": "print(2 ** int(input()) - 1)",
+"e2": "Recurrence solve చేస్తే 2ⁿ - 1."
+},
+{
+"l": 210,
+"t": "All permutations",
+"i": "abc",
+"o": "['abc', 'acb', 'bac', 'bca', 'cab', 'cba']",
+"s": "def perm(s):\n    if len(s) <= 1:\n        return [s]\n    out = []\n    for i, c in enumerate(s):\n        for p in perm(s[:i] + s[i + 1:]):\n            out.append(c + p)\n    return out\nprint(perm(input()))",
+"e": "ఒక character ఎంచుకొని మిగిలిన వాటి permutations కి recursion.",
+"s2": "from itertools import permutations\nprint([''.join(p) for p in permutations(input())])",
+"e2": "Library function: ఒక్క line."
+},
+{
+"l": 210,
+"t": "All subsets",
+"i": "1 2 3",
+"o": "[[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]]",
+"s": "a = list(map(int, input().split()))\nres = [[]]\nfor x in a:\n    res += [r + [x] for r in res]\nprint(res)",
+"e": "ప్రతి element కి ఉన్న subsets రెట్టింపు.",
+"s2": "a = list(map(int, input().split()))\nn = len(a)\nprint([[a[i] for i in range(n) if m >> i & 1] for m in range(1 << n)])",
+"e2": "Bitmask: ప్రతి number లో set bits = ఎంచుకున్న elements."
+},
+{
+"l": 210,
+"t": "Minimum coins",
+"i": "1 2 5\n11",
+"o": "3",
+"s": "c = list(map(int, input().split()))\nt = int(input())\nINF = float('inf')\ndp = [0] + [INF] * t\nfor a in range(1, t + 1):\n    for x in c:\n        if x <= a:\n            dp[a] = min(dp[a], dp[a - x] + 1)\nprint(dp[t] if dp[t] != INF else -1)",
+"e": "dp[a] = a కి కనిష్ట coins. Bottom-up.",
+"s2": "from functools import lru_cache\nc = list(map(int, input().split()))\nt = int(input())\nINF = float('inf')\n@lru_cache(None)\ndef f(a):\n    if a == 0:\n        return 0\n    return min((f(a - x) + 1 for x in c if x <= a), default=INF)\nprint(f(t) if f(t) != INF else -1)",
+"e2": "అదే idea top-down recursion + memo."
 }
 ];
